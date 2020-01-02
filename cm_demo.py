@@ -10,7 +10,7 @@ def main():
 
     ledger = cm.Ledger()
 
-    json_data = open('kymeta_demo.json').read()
+    json_data = open('cm_demo.json').read()
     ledger.import_json(json_data)
 
     print(ledger.generate_report(), end='')
