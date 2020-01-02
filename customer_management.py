@@ -47,6 +47,14 @@ class BaseSale():
         self.price = price
         self.quantity = quantity
 
+    def __str__(self):
+        """ Returns a string representation of the sale. """
+
+        summary = f"{self.item} [{self.sale_type.value}]"
+        if self.quantity > 1:
+            summary = f"{self.quantity}x {summary}"
+        return summary
+
 
 class ProductSale(BaseSale):
     """ Record-type for standalone/product sales. """
@@ -59,12 +67,24 @@ class ProductSale(BaseSale):
 class SubscriptionSale(BaseSale):
     """ Record-type for subscription-based sales. """
 
-    def __init__(self, expiration, *args, **kwargs):
-        assert isinstance(expiration, datetime)
-
+    def __init__(self, *args, expiration=None, **kwargs):
         super().__init__(*args, **kwargs)
+
+        if expiration:
+            if isinstance(expiration, str):
+                expiration = datetime.fromisoformat(expiration)
+            else:
+                assert isinstance(expiration, datetime)
+
         self.sale_type = SaleCode.SUBSCRIPTION
         self.expiration = expiration
+
+    def __str__(self):
+        result = super().__str__()
+        if self.expiration:
+            result += f" (exp: {self.expiration.strftime('%Y-%m-%d')})"
+
+        return result
 
 
 class UpgradeSale(BaseSale):
@@ -134,18 +154,14 @@ class BaseCustomer():
         sale_summaries = []
 
         for sale in self.find_sales(last_year):
-            summary = f"{sale.item} [{sale.sale_type.value}]"
-            if sale.quantity > 1:
-                summary = f"{sale.quantity} x {summary}"
-
-            sale_summaries.append(summary)
+            sale_summaries.append(str(sale))
 
         result = f"{self.name} [{self.cust_type.value}], "
         result += f"Duration: {age_approx:.1f} years, "
-        result += "Purchases in the last year: "
+        result += "Purchases in the last year:\n"
 
         if sale_summaries:
-            result += ', '.join(sale_summaries)
+            result += "    " + '\n    '.join(sale_summaries)
         else:
             result += "(none)"
 
