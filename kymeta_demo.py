@@ -7,7 +7,9 @@ from decimal import Decimal
 
 def main():
     ledger = cm.Ledger()
-    ledger.import_json('kymeta_demo.json')
+
+    json_data =  open('kymeta_demo.json').read()
+    ledger.import_json(json_data)
 
     print(ledger.generate_report(), end='')
 

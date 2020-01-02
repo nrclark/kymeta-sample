@@ -260,11 +260,12 @@ class Ledger():
 
         return result
 
-    def import_json(self, filename):
-        """ Imports a ledger from a JSON file. """
+    def import_json(self, data):
+        """ Imports JSON data into the ledger. """
 
-        file_data = open(filename).read()
-        data = json.loads(file_data)
+        if isinstance(data, str):
+            data = json.loads(data)
+
         assert isinstance(data, list)
 
         for record in data:
