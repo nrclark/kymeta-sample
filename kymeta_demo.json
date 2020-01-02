@@ -1,0 +1,45 @@
+[
+  {
+    "name": "Acme, Inc", 
+    "aquisition_date": "2017-01-02",
+    "cust_type": "R",
+    "sales": [
+      {
+        "sale_type": "S",
+        "item": "Anvil",
+        "date": "2019-04-01",
+        "price": "29.99",
+        "quantity": 8
+      },
+      {
+        "sale_type": "R",
+        "item": "Dynamite",
+        "date": "2019-03-20",
+        "price": "1.21",
+        "quantity": 1,
+        "expiration": "2025-03-20"
+      }
+    ]
+  },
+  {
+    "name": "Cash 4 Pyrite", 
+    "aquisition_date": "1972-01-02",
+    "cust_type": "A",
+    "sales": [
+      {
+        "sale_type": "S",
+        "item": "Authentic Gold Bricks",
+        "date": "2019-04-01",
+        "price": "8001.00",
+        "quantity": 3
+      },
+      {
+        "sale_type": "U",
+        "item": "Software Unlock to Actual Gold",
+        "date": "2020-01-01",
+        "price": "37.99",
+        "quantity": 3
+      }
+    ]
+  }
+]

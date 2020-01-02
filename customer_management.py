@@ -5,6 +5,7 @@ of customer addition/removal, and of sales addition/removal. """
 
 # pylint: disable=too-few-public-methods
 
+import json
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
@@ -27,7 +28,7 @@ class CustomerCode(Enum):
     UNKNOWN = 'X'
     CASH = 'C'
     ACCOUNT = 'A'
-    SUBSCRIPTION = 'S'
+    SUBSCRIPTION = 'R'
 
 
 class BaseSale():
@@ -90,8 +91,9 @@ class SubscriptionSale(BaseSale):
 class UpgradeSale(BaseSale):
     """ Record-type for upgrade sales to existing customers. """
 
-    def __init__(self, prev_sale, *args, **kwargs):
-        assert isinstance(prev_sale, BaseSale)
+    def __init__(self, *args, prev_sale=None, **kwargs):
+        if prev_sale:
+            assert isinstance(prev_sale, BaseSale)
 
         super().__init__(*args, **kwargs)
         self.sale_type = SaleCode.UPGRADE
@@ -192,6 +194,13 @@ class SubscriptionCustomer(BaseCustomer):
         self.cust_type = CustomerCode.SUBSCRIPTION
 
 
+SALE_MAP = {
+    SaleCode.STANDALONE: ProductSale,
+    SaleCode.SUBSCRIPTION: SubscriptionSale,
+    SaleCode.UPGRADE: UpgradeSale
+}
+
+
 CUSTOMER_MAP = {
     CustomerCode.SUBSCRIPTION: SubscriptionCustomer,
     CustomerCode.ACCOUNT: AccountCustomer,
@@ -250,3 +259,34 @@ class Ledger():
                 result += f"{customer.summary_line()}\n"
 
         return result
+
+    def import_json(self, filename):
+        """ Imports a ledger from a JSON file. """
+
+        file_data = open(filename).read()
+        data = json.loads(file_data)
+        assert isinstance(data, list)
+
+        for record in data:
+            cust_id = record['name']
+            cust_code = CustomerCode(record['cust_type'])
+            while cust_id in self.customers:
+                cust_id += ".alt"
+
+            self.add_customer(record['name'], record['aquisition_date'],
+                              cust_code, cust_id)
+
+            for entry in record.get('sales', []):
+                price = Decimal(entry['price'])
+                sale_gen = SALE_MAP[SaleCode(entry['sale_type'])]
+                quantity = entry.get('quantity', 1)
+
+                if 'expiration' in entry:
+                    kwargs = {'expiration': entry['expiration']}
+                else:
+                    kwargs = {}
+
+                sale = sale_gen(entry['item'], entry['date'], price, quantity,
+                                **kwargs)
+
+                self.add_sale(cust_id, sale)
