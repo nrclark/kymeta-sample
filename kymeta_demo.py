@@ -3,12 +3,14 @@
 """ Example code that exercises customer_management.py """
 
 import customer_management as cm
-from decimal import Decimal
+
 
 def main():
+    """ Sample routine to read an external file and print a ledger. """
+
     ledger = cm.Ledger()
 
-    json_data =  open('kymeta_demo.json').read()
+    json_data = open('kymeta_demo.json').read()
     ledger.import_json(json_data)
 
     print(ledger.generate_report(), end='')
