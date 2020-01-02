@@ -18,6 +18,13 @@
         "price": "1.21",
         "quantity": 1,
         "expiration": "2025-03-20"
+      },
+      {
+        "sale_type": "U",
+        "item": "Longer Fuse",
+        "date": "2019-03-20",
+        "price": "0.01",
+        "quantity": 1
       }
     ]
   },

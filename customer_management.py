@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
+# pylint: disable=too-few-public-methods
 
 """ Module for customer management. Provides minimal implementation
 of customer addition/removal, and of sales addition/removal. """
-
-# pylint: disable=too-few-public-methods
 
 import json
 from datetime import datetime
@@ -250,7 +249,7 @@ class Ledger():
         """ Generates a text-based report with a summary of customers and
         their recent purchases. """
 
-        result = "Customers:\n"
+        result = ""
 
         if not self.customers:
             result += "(none)"
